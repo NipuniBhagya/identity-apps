@@ -21,7 +21,7 @@ import { AxiosHttpClient } from "@wso2is/http";
 import axios from "axios";
 import { isEmpty } from "lodash";
 import { ServiceResourcesEndpoint } from "../configs";
-import { BasicProfileInterface, HttpMethods } from "../models";
+import { BasicProfileInterface, HttpMethods, UserMeta } from "../models";
 
 /**
  * Get an axios instance.
@@ -55,6 +55,32 @@ export const getUserInfo = (): Promise<any> => {
         })
         .catch((error) => {
             return Promise.reject(`Failed to retrieve user information - ${error}`);
+        });
+};
+
+/**
+ * Retrieve the meta details of the user claims of currently authenticated user.
+ *
+ * @return {Promise<any>} a promise containing the response.
+ */
+export const getUserMetaInfo = (): Promise<any> => {
+    const requestConfig = {
+        headers: {
+            "Access-Control-Allow-Origin": CLIENT_HOST,
+            "Content-Type": "application/json"
+        },
+        method: HttpMethods.GET,
+        url: ServiceResourcesEndpoint.userMeta
+    };
+
+    return httpClient.request(requestConfig)
+        .then((response) => {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(`Failed get user info from: ${ ServiceResourcesEndpoint.userMeta }`));
+            }
+            return Promise.resolve(response.data[0].attributes as UserMeta[]);
+        }).catch((error) => {
+            return Promise.reject(`Failed to retrieve user information - ${ error }`);
         });
 };
 

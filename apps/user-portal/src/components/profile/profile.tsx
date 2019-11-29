@@ -23,8 +23,8 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Grid, Icon, List, Popup, Responsive } from "semantic-ui-react";
-import { updateProfileInfo } from "../../api";
-import { AuthStateInterface, createEmptyProfile, Notification } from "../../models";
+import { getProfileInfo, getUserMetaInfo, updateProfileInfo } from "../../api";
+import { AuthStateInterface, createEmptyProfile, createProfile, Notification, UserMeta } from "../../models";
 import { AppState } from "../../store";
 import { getProfileInformation } from "../../store/actions";
 import { EditSection, SettingsSection, UserAvatar } from "../shared";
@@ -45,6 +45,7 @@ interface ProfileProps {
 export const Profile: FunctionComponent<ProfileProps> = (props: ProfileProps): JSX.Element => {
     const [profileInfo, setProfileInfo] = useState(createEmptyProfile());
     const [editingProfileInfo, setEditingProfileInfo] = useState(createEmptyProfile());
+    const [metaProfile, setMetaProfile] = useState([]);
     const [editingForm, setEditingForm] = useState({
         emailChangeForm: false,
         mobileChangeForm: false,
@@ -56,23 +57,52 @@ export const Profile: FunctionComponent<ProfileProps> = (props: ProfileProps): J
     const dispatch = useDispatch();
     const profileDetails: AuthStateInterface = useSelector((state: AppState) => state.authenticationInformation);
 
-    /**
-     * dispatch getProfileInformation action if the profileDetails object is empty
-     */
     useEffect(() => {
-        if (isEmpty(profileDetails.profileInfo)) {
-            dispatch(getProfileInformation());
-        }
+        getUserMetaInfo().then((res) => {
+            const arr = setMeta(res);
+            arr.sort((a, b) => {
+                // @ts-ignore
+                return a.displayOrder - b.displayOrder;
+            });
+            setMetaProfile(arr);
+        });
     }, []);
 
-    /**
-     * If the profileDetails object changes call the setBasicDetails function
-     */
     useEffect(() => {
-        if (!isEmpty(profileDetails.profileInfo)) {
-            setBasicDetails(profileDetails.profileInfo);
-        }
-    }, [profileDetails.profileInfo]);
+        getProfileInfo().then((response) => {
+            metaProfile.map((meta) => {
+                const metaName = meta.name;
+                if (meta.subAttributes && meta.subAttributes.length > 0) {
+                    meta.subAttributes.map((subAttribute) => {
+                        if (response.data.hasOwnProperty(meta.name)) {
+                            subAttribute.claimValue = response.data.metaName[subAttribute.name];
+                        }
+                    });
+                } else {
+                    if (response.data.hasOwnProperty(meta.name)) {
+                        meta.claimValue = response.data[meta.name];
+                    }
+                }
+            });
+        });
+    }, [metaProfile]);
+
+    /**
+     * Fetches profile information.
+     */
+    const fetchProfileInfo = (): void => {
+        getUserMetaInfo().then((res) => {
+            const arr = setMeta(res);
+            setMetaProfile(arr);
+            getProfileInfo().then((response) => {
+                metaProfile.map((meta) => {
+                    if (response.data.hasOwnProperty(meta.name)) {
+                        meta.claimValue = response.data[meta.name];
+                    }
+                });
+            });
+        });
+    };
 
     /**
      * The following method handles the `onSubmit` event of forms.
@@ -207,6 +237,46 @@ export const Profile: FunctionComponent<ProfileProps> = (props: ProfileProps): J
             userimage: profile.userimage,
             username: profile.username
         });
+    };
+
+    const setClaimValue = (profileClaims) => {
+        /*debugger;
+        metaProfile.map((meta) => {
+            if (profileClaims.hasOwnProperty(meta.name)) {
+                meta.claimValue = profileClaims[meta.name];
+            }
+        });*/
+    };
+
+    const setMeta = (metaDetails): UserMeta[] => {
+        // getUserMetaInfo().then((metaDetails) => {
+        const metaData = [];
+        let metaObject: UserMeta = createProfile();
+        metaDetails.map((metaItem) => {
+            metaObject.caseExact = metaItem.caseExact;
+            metaObject.claimValue = "";
+            metaObject.description = metaItem.description;
+            metaObject.displayName = metaItem.displayName;
+            metaObject.displayOrder = metaItem.displayOrder;
+            metaObject.multiValued = metaItem.multiValued;
+            metaObject.mutability = metaItem.mutability;
+            metaObject.name = metaItem.name;
+            metaObject.required = metaItem.required;
+            metaObject.returned = metaItem.returned;
+            metaObject.subAttributes = metaItem.subAttributes ? metaItem.subAttributes.map((attribute) => {
+                    return {
+                        ...attribute,
+                        claimValue: ""
+                    };
+                })
+                : [];
+            metaObject.type = metaItem.type;
+            metaObject.uniqueness = metaItem.uniqueness;
+            metaData.push(metaObject);
+            metaObject = createProfile();
+        });
+        return metaData;
+        // });
     };
 
     const handleNameChange = editingForm.nameChangeForm ? (

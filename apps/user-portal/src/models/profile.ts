@@ -75,3 +75,36 @@ export const createEmptyProfile = (): BasicProfileInterface => ({
     userimage: "",
     username: ""
 });
+
+export const createProfile = (): UserMeta => ({
+    caseExact: false,
+    claimValue: "",
+    description: "",
+    displayName: "",
+    displayOrder: "",
+    multiValued: false,
+    mutability: "",
+    name: "",
+    required: false,
+    returned: "",
+    subAttributes: [{}],
+    type: "",
+    uniqueness: "",
+
+});
+
+export interface UserMeta {
+    claimValue: string;
+    uniqueness: string;
+    displayName: string;
+    name: string;
+    displayOrder: string;
+    description: string;
+    mutability: string;
+    type: string;
+    multiValued: boolean;
+    caseExact: boolean;
+    returned: string;
+    required: boolean;
+    subAttributes?: any;
+}
