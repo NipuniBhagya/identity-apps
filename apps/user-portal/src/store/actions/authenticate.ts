@@ -19,6 +19,7 @@
 import {
     AuthenticateSessionUtil,
     AuthenticateTokenKeys,
+    OIDCRequestParamsInterface,
     OPConfigurationUtil,
     SignInUtil,
     SignOutUtil
@@ -84,8 +85,6 @@ export const getProfileInformation = (updateProfileCompletion: boolean = false) 
     // Get the profile info
     getProfileInfo()
         .then((infoResponse) => {
-            dispatch(setProfileInfoLoader(false));
-
             if (infoResponse.responseStatus === 200) {
                 dispatch(
                     setProfileInfo({
@@ -148,22 +147,30 @@ export const getProfileInformation = (updateProfileCompletion: boolean = false) 
                     )
                 })
             );
+        })
+        .finally(() => {
+            dispatch(setProfileInfoLoader(false));
         });
 };
 
 /**
  * Handle user sign-in
  */
-export const handleSignIn = () => (dispatch) => {
+export const handleSignIn = (consentDenied: boolean= false) => (dispatch) => {
     const sendSignInRequest = () => {
-        const requestParams = {
+        const requestParams: OIDCRequestParamsInterface = {
             clientHost: GlobalConfig.clientHost,
             clientId: GlobalConfig.clientID,
             clientSecret: null,
             enablePKCE: true,
             redirectUri: GlobalConfig.loginCallbackUrl,
-            scope: [ TokenConstants.LOGIN_SCOPE, TokenConstants.HUMAN_TASK_SCOPE ]
+            scope: [TokenConstants.LOGIN_SCOPE, TokenConstants.HUMAN_TASK_SCOPE]
         };
+
+        if (consentDenied) {
+            requestParams.prompt = "login";
+        }
+
         if (SignInUtil.hasAuthorizationCode()) {
             SignInUtil.sendTokenRequest(requestParams)
                 .then((response) => {
