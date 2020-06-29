@@ -233,3 +233,15 @@ export const OverviewPageIllustrations = {
         userstores: DatabaseIcon
     }
 };
+
+export const NotificationIcons = {
+    certificate: CertificateIcon,
+    claims: ClaimsIcon,
+    connections: PlugIcon,
+    groups: UserGroupIcon,
+    overview: DashboardIcon,
+    roles: BriefcaseIcon,
+    serverConfigurations: GearsIcon,
+    userStore: DatabaseIcon,
+    users: UserIcon
+};

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { AlertInterface, CommonGlobalReducerStateInterface } from "@wso2is/core/models";
+import { AlertInterface, CommonGlobalReducerStateInterface, AccountNotifications } from "@wso2is/core/models";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import { System } from "react-notification-system";
 
@@ -26,10 +26,12 @@ import { System } from "react-notification-system";
 export const commonGlobalReducerInitialState: CommonGlobalReducerStateInterface<
     AlertInterface,
     System,
-    SupportedLanguagesMeta> = {
+    SupportedLanguagesMeta,
+    AccountNotifications[]> = {
 
     alert: null,
     alertSystem: null,
     isAJAXTopLoaderVisible: false,
-    supportedI18nLanguages: null
+    supportedI18nLanguages: null,
+    notifications: []
 };

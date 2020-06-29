@@ -17,6 +17,7 @@
  */
 
 import {
+    AccountNotifications,
     AlertInterface,
     LinkedAccountInterface,
     ProfileInfoInterface,
@@ -60,7 +61,7 @@ export const reducers = combineReducers({
         I18nModuleOptionsInterface,
         UIConfigInterface
         >(commonConfigReducerInitialState),
-    global: commonGlobalReducer<AlertInterface, System, SupportedLanguagesMeta>(commonGlobalReducerInitialState),
+    global: commonGlobalReducer<AlertInterface, System, SupportedLanguagesMeta, AccountNotifications[]>(commonGlobalReducerInitialState),
     loaders: commonRequestLoadersReducer(commonRequestLoadersInitialState),
     profile: commonProfileReducer<
         ProfileInfoInterface,

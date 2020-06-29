@@ -160,6 +160,16 @@ export const DefaultLayout: FunctionComponent<DefaultLayoutPropsInterface> = (
             onLayoutOnUpdate={ handleLayoutOnUpdate }
             header={ (
                 <Header
+                    menuActions={
+                        (
+                            {
+                                notifications: {
+                                    icon: "bell outline",
+                                    notificationList: null
+                                }
+                            }
+                        )
+                    }
                     brand={ (
                         <ProductBrand
                             style={ { marginTop: 0 } }

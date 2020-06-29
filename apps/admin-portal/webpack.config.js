@@ -96,6 +96,15 @@ module.exports = (env) => {
         module: {
             rules: [
                 {
+                    test: /\.worker\.ts$/,
+                    use: {
+                        loader: "worker-loader",
+                        options: {
+                            inline: true
+                        }
+                    }
+                },
+                {
                     test: /\.css$/,
                     use: ["style-loader", "css-loader"]
                 },
@@ -189,6 +198,7 @@ module.exports = (env) => {
         },
         output: {
             filename: "[name].js",
+            globalObject: "this",
             path: distFolder,
             publicPath: `${ publicPath }/`
         },

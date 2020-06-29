@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Grid, Icon, Modal } from "semantic-ui-react";
 import { GeneralDetailsUserstore, GroupDetails, SummaryUserStores, UserDetails } from "./wizards";
-import { addUserStore } from "../../api";
+import { addUserStore, getUserStores } from "../../api";
 import { AddUserstoreWizardStepIcons } from "../../configs";
 import { AppConstants, USERSTORE_TYPE_DISPLAY_NAMES } from "../../constants";
 import { history } from "../../helpers";
@@ -36,6 +36,7 @@ import {
     UserstoreType
 } from "../../models";
 import { reOrganizeProperties } from "../../utils";
+import UserStoreWorker from "../../scripts/userstore.worker";
 
 /**
  * Prop types of the `AddUserStore` component
@@ -82,9 +83,18 @@ export const AddUserStore: FunctionComponent<AddUserStoreProps> = (props: AddUse
     const [ secondStep, setSecondStep ] = useTrigger();
     const [ thirdStep, setThirdStep ] = useTrigger();
 
+    const [ initialUserstoreList, setInitialUserstoreList ] = useState(undefined);
+
     const dispatch = useDispatch();
 
     const { t } = useTranslation();
+
+    useEffect(() => {
+        getUserStores(null)
+            .then((response) => {
+                setInitialUserstoreList(response);
+            });
+    }, []);
 
     useEffect(() => {
         type && setProperties(reOrganizeProperties(type.properties));
@@ -97,6 +107,15 @@ export const AddUserStore: FunctionComponent<AddUserStoreProps> = (props: AddUse
     useEffect(() => {
         groupDetailsData && serializeData();
     }, [ groupDetailsData ]);
+
+    const initUserstoreWorker = () => {
+        const worker = new UserStoreWorker();
+        try {
+            worker.postMessage({ cmd: "start", userstoreList: initialUserstoreList, operation: "create" });
+        } catch (e) {
+            console.log("Worker post message error", e);
+        }
+    };
 
     /**
      * Adds the userstore
@@ -114,6 +133,7 @@ export const AddUserStore: FunctionComponent<AddUserStoreProps> = (props: AddUse
                 message: t("adminPortal:components.userstores.notifications.delay.message")
             }));
 
+            initUserstoreWorker();
             onClose();
 
             history.push(AppConstants.PATHS.get("USERSTORES"));

@@ -55,6 +55,7 @@ import { ComponentPlaceholder } from "../extensions";
 import { history } from "../helpers";
 import { ConfigReducerStateInterface, FeatureConfigInterface } from "../models";
 import { AppState, store } from "../store";
+import {AccountNotifications} from "@wso2is/core/dist/src/models";
 
 /**
  * Dashboard layout Prop types.
@@ -92,6 +93,10 @@ export const DashboardLayout: FunctionComponent<DashboardLayoutPropsInterface> =
     const alert: AlertInterface = useSelector((state: AppState) => state.global.alert);
     const alertSystem: System = useSelector((state: AppState) => state.global.alertSystem);
     const isAJAXTopLoaderVisible: boolean = useSelector((state: AppState) => state.global.isAJAXTopLoaderVisible);
+    const notifications: AccountNotifications[] = useSelector((state: AppState) => state.global.notifications);
+
+    console.log("Notification dashboard", notifications);
+    console.log("Notification length", notifications?.length);
 
     const [ filteredRoutes, setFilteredRoutes ] = useState<RouteInterface[]>(routes);
     const [ selectedRoute, setSelectedRoute ] = useState<RouteInterface | ChildRouteInterface>(routes[ 0 ]);
@@ -331,6 +336,14 @@ export const DashboardLayout: FunctionComponent<DashboardLayoutPropsInterface> =
             onLayoutOnUpdate={ handleLayoutOnUpdate }
             header={ (
                 <Header
+                    menuActions={ notifications && (
+                        {
+                            notifications: {
+                                icon: "bell outline",
+                                notificationList: notifications
+                            }
+                        }
+                    ) }
                     brand={ (
                         <ProductBrand
                             style={ { marginTop: 0 } }

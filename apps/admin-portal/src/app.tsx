@@ -16,12 +16,10 @@
  * under the License.
  */
 
-import { getAppConfig } from "@wso2is/core/api";
 import { CommonHelpers, isPortalAccessGranted } from "@wso2is/core/helpers";
 import { emptyIdentityAppsSettings } from "@wso2is/core/models";
 import {
     setDeploymentConfigs,
-    setFeatureConfigs,
     setI18nConfigs,
     setServiceResourceEndpoints,
     setUIConfigs
@@ -30,24 +28,25 @@ import { LocalStorageUtils } from "@wso2is/core/utils";
 import { I18n, I18nModuleOptionsInterface } from "@wso2is/i18n";
 import { ContentLoader, ThemeContext } from "@wso2is/react-components";
 import _ from "lodash";
-import React, { FunctionComponent, ReactElement, Suspense, useContext, useEffect } from "react";
+import React, {FunctionComponent, ReactElement, Suspense, useContext, useEffect, useState} from "react";
 import { Helmet } from "react-helmet";
 import { I18nextProvider } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Router, Switch } from "react-router-dom";
 import { ProtectedRoute } from "./components";
-import { Config, baseRoutes } from "./configs";
+import { Config, baseRoutes, NotificationIcons } from "./configs";
 import { AppConstants } from "./constants";
 import { history } from "./helpers";
 import {
-    ConfigInterface,
     ConfigReducerStateInterface,
     DeploymentConfigInterface,
     FeatureConfigInterface,
     ServiceResourceEndpointsInterface,
     UIConfigInterface
 } from "./models";
-import { AppState } from "./store";
+import { AppState, store } from "./store";
+import { setNotifications } from "@wso2is/core/store";
+import { AccountNotifications } from "@wso2is/core/dist/src/models";
 
 /**
  * Main App component.
@@ -63,6 +62,56 @@ export const App: FunctionComponent<{}> = (): ReactElement => {
     const userName: string = useSelector((state: AppState) => state.auth.username);
     const loginInit: boolean = useSelector((state: AppState) => state.auth.loginInit);
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
+    const accountNotifications = useSelector((state: AppState) => state.global.notifications);
+
+    const [ message, setMessage ] = useState(undefined);
+    const [ workerChannel, setWorkerChannel ] = useState(new MessageChannel());
+    const [ workerChannelPort, setWorkerChannelPort ] = useState(undefined);
+
+
+    // const userstoreWorkerChannel = new MessageChannel();
+    // const userstoreWorkerPort = userstoreWorkerChannel.port1;
+
+    // console.log("This is worker port", userstoreWorkerPort);
+    //
+    // userstoreWorkerPort.onmessage = ((event: MessageEvent) => {
+    //     setMessage(event.data);
+    // });
+
+    useEffect(() => {
+        if (workerChannel) {
+            setWorkerChannelPort(workerChannel.port1);
+        }
+    }, [ workerChannel ]);
+
+    useEffect(() => {
+        if (workerChannelPort) {
+            window["userstoreWorkerChannel"] = workerChannel;
+            workerChannelPort.onmessage = ((event: MessageEvent) => {
+                setMessage(event.data);
+            });
+        } else {
+            setWorkerChannel(new MessageChannel());
+        }
+    }, [ workerChannelPort ]);
+
+    useEffect(() => {
+        if (!message) {
+            return;
+        }
+
+        const time = new Date();
+        const notifications = [ ...accountNotifications ];
+        const userstoreNotification: AccountNotifications = {
+           header: "Userstores",
+           content: "The user store was successfully created.",
+           icon: NotificationIcons.userStore ,
+           timeStamp: time
+        };
+
+        notifications.push(userstoreNotification);
+        dispatch(setNotifications(notifications));
+    }, [ message ]);
 
     /**
      * Set the deployment configs in redux state.
