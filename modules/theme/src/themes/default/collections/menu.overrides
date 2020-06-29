@@ -32,6 +32,17 @@
     &.app-header {
         box-shadow: none;
 
+        .user-notifications {
+            .ui.label {
+                margin-right: 1px !important;
+                margin-top: 23px !important;
+            }
+
+            i {
+                margin-right: -11px !important;
+            }
+        }
+
         .user-dropdown {
             &:hover {
                 background: transparent;

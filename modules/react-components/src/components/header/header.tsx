@@ -18,7 +18,7 @@
 
 import { getGravatarImage } from "@wso2is/core/api";
 import { resolveUserDisplayName, resolveUsername } from "@wso2is/core/helpers";
-import { LinkedAccountInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { LinkedAccountInterface, TestableComponentInterface, AccountActions } from "@wso2is/core/models";
 import classNames from "classnames";
 import React, { FunctionComponent, ReactElement, SyntheticEvent } from "react";
 import { Link } from "react-router-dom";
@@ -33,6 +33,7 @@ import {
     Responsive
 } from "semantic-ui-react";
 import { UserAvatar } from "../avatar";
+import { HeaderActions } from "./header-actions";
 
 /**
  * Header component prop types.
@@ -54,6 +55,7 @@ export interface HeaderPropsInterface extends TestableComponentInterface {
     onSidePanelToggleClick?: () => void;
     showSidePanelToggle?: boolean;
     showUserDropdown?: boolean;
+    menuActions?: AccountActions;
     userDropdownIcon?: any;
     userDropdownInfoAction?: React.ReactNode;
     userDropdownLinks?: HeaderLinkInterface[];
@@ -102,6 +104,7 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
         onSidePanelToggleClick,
         userDropdownIcon,
         userDropdownLinks,
+        menuActions,
         [ "data-testid" ]: testId
     } = props;
 
@@ -194,6 +197,14 @@ export const Header: FunctionComponent<HeaderPropsInterface> = (
                 { (
                     <Menu.Menu position="right" data-testid={ `${ testId }-user-dropdown-container` }>
                         { children }
+                        {
+                            menuActions && (
+                                <Menu.Item
+                                    as={ Link } to={ "#" } header data-testid={ `${ testId }-notifications` }>
+                                    <HeaderActions actions={ menuActions }/>
+                                </Menu.Item>
+                            )
+                        }
                         {
                             showUserDropdown && (
                                 <Dropdown
