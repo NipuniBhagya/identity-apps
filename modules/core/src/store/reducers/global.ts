@@ -22,13 +22,13 @@ import { CommonGlobalActionTypes, CommonGlobalActions } from "../actions/types";
 /**
  * Reducer to handle the state of common global app actions.
  *
- * @param {CommonGlobalReducerStateInterface<T, S, U>} initialState - Reducer initial state.
- * @return {CommonGlobalReducerStateInterface<T, S, U>} The new state.
+ * @param {CommonGlobalReducerStateInterface<T, S, U, N>} initialState - Reducer initial state.
+ * @return {CommonGlobalReducerStateInterface<T, S, U, N>} The new state.
  */
-export const commonGlobalReducer = <T, S, U>(initialState: CommonGlobalReducerStateInterface<T, S, U>) => (
-    state: CommonGlobalReducerStateInterface<T, S, U> = initialState,
-    action: CommonGlobalActions<T, S, U>
-): CommonGlobalReducerStateInterface<T, S, U> => {
+export const commonGlobalReducer = <T, S, U, N>(initialState: CommonGlobalReducerStateInterface<T, S, U, N>) => (
+    state: CommonGlobalReducerStateInterface<T, S, U, N> = initialState,
+    action: CommonGlobalActions<T, S, U, N>
+): CommonGlobalReducerStateInterface<T, S, U, N> => {
 
     switch (action.type) {
         case CommonGlobalActionTypes.SHOW_AJAX_TOP_LOADING_BAR:
@@ -55,6 +55,11 @@ export const commonGlobalReducer = <T, S, U>(initialState: CommonGlobalReducerSt
             return {
                 ...state,
                 supportedI18nLanguages: action.payload
+            };
+        case CommonGlobalActionTypes.SET_NOTIFICATIONS:
+            return {
+                ...state,
+                notifications: action.payload
             };
         default:
             return state;

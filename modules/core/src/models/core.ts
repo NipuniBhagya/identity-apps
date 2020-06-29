@@ -17,6 +17,8 @@
  */
 
 import { Notification } from "react-notification-system";
+import {ReactElement} from "react";
+import {SemanticICONS} from "semantic-ui-react";
 
 /**
  * Alert interface.
@@ -144,4 +146,40 @@ export enum ProductReleaseTypes {
      * @type {string}
      */
     RC = "rc"
+}
+
+/**
+ * Interface for account actions.
+ */
+export interface AccountActions {
+    notifications: {
+        icon: ReactElement | SemanticICONS;
+        notificationList: AccountNotifications[]
+    }
+}
+
+/**
+ * Interface for account notifications.
+ */
+export interface AccountNotifications {
+    /**
+     * Notification header
+     * @type {string}
+     */
+    header?: string;
+    /**
+     * Notification content
+     * @type {string}
+     */
+    content: string;
+    /**
+     * Notification image
+     * @type {any}
+     */
+    icon: any;
+    /**
+     * Time stamp of the notification.
+     * @type {Date}
+     */
+    timeStamp?: Date;
 }

@@ -20,7 +20,7 @@ import {
     AddAlertAction,
     CommonGlobalActionTypes,
     HideAJAXTopLoadingBarAction,
-    InitializeAlertSystemAction,
+    InitializeAlertSystemAction, SetNotifications,
     SetSupportedI18nLanguagesActionInterface,
     ShowAJAXTopLoadingBarAction
 } from "./types";
@@ -75,4 +75,15 @@ export const addAlert = <T = {}>(alert: T): AddAlertAction<T> => ({
 export const setSupportedI18nLanguages = <T = {}>(languages: T): SetSupportedI18nLanguagesActionInterface<T> => ({
     payload: languages,
     type: CommonGlobalActionTypes.SET_SUPPORTED_I18N_LANGUAGES
+});
+
+/**
+ * Redux action to set the notofications.
+ *
+ * @param {N} notifications - User account notifications.
+ * @return {SetNotifications<N>}
+ */
+export const setNotifications = <N = {}>(notifications: N): SetNotifications<N> => ({
+    payload: notifications,
+    type: CommonGlobalActionTypes.SET_NOTIFICATIONS
 });

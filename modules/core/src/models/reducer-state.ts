@@ -83,7 +83,7 @@ export interface AuthReducerStateInterface {
 /**
  * Interface for the common global reducer state.
  */
-export interface CommonGlobalReducerStateInterface<T, S, U> {
+export interface CommonGlobalReducerStateInterface<T, S, U, N> {
     /**
      * Alert object.
      */
@@ -100,6 +100,10 @@ export interface CommonGlobalReducerStateInterface<T, S, U> {
      * Supported languages.
      */
     supportedI18nLanguages: U;
+    /**
+     * User account notifications.
+     */
+    notifications?: N;
 }
 
 /**

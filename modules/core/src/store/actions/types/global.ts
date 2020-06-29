@@ -49,7 +49,11 @@ export enum CommonGlobalActionTypes {
      *
      * @type {string}
      */
-    SET_SUPPORTED_I18N_LANGUAGES = "SET_SUPPORTED_I18N_LANGUAGES"
+    SET_SUPPORTED_I18N_LANGUAGES = "SET_SUPPORTED_I18N_LANGUAGES",
+    /**
+     * Action type to set the account notifications.
+     */
+    SET_NOTIFICATIONS = "SET_NOTIFICATIONS"
 }
 
 /**
@@ -98,10 +102,19 @@ export interface SetSupportedI18nLanguagesActionInterface <U = {}>extends Common
 }
 
 /**
+ * Set notification action interface.
+ */
+export interface SetNotifications<N = {}> extends CommonGlobalBaseAction {
+    payload: N;
+    type: CommonGlobalActionTypes.SET_NOTIFICATIONS;
+}
+
+/**
  * Export action interfaces.
  */
-export type CommonGlobalActions<T, S, U> = ShowAJAXTopLoadingBarAction
+export type CommonGlobalActions<T, S, U, N> = ShowAJAXTopLoadingBarAction
     | HideAJAXTopLoadingBarAction
     | AddAlertAction<T>
     | InitializeAlertSystemAction<S>
-    | SetSupportedI18nLanguagesActionInterface<U>;
+    | SetSupportedI18nLanguagesActionInterface<U>
+    | SetNotifications<N>;
