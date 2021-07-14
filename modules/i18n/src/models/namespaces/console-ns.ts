@@ -934,6 +934,7 @@ export interface ConsoleNS {
                 };
                 notifications: {
                     addApplication: Notification;
+                    apiLimitReachedError: Notification;
                     authenticationStepMin: Notification;
                     authenticationStepDeleteErrorDueToSecondFactors: Notification;
                     deleteApplication: Notification;
@@ -1698,6 +1699,7 @@ export interface ConsoleNS {
                 notifications: {
                     addFederatedAuthenticator: Notification;
                     addIDP: Notification;
+                    apiLimitReachedError: Notification;
                     changeCertType: {
                         pem: {
                            description: string;
@@ -3546,6 +3548,7 @@ export interface ConsoleNS {
                     updateUserstore: Notification;
                     testConnection: Notification;
                     addUserstore: Notification;
+                    apiLimitReachedError: Notification;
                     updateDelay: NotificationItem;
                 };
                 confirmation: {
