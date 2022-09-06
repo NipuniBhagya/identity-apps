@@ -28,14 +28,12 @@
         </h3>
     </div>
     <form class="ui large form" action="<%=commonauthURL%>" method="POST">
-        <div class="field">
-            <label for="<e:forHtmlAttribute value="${input.id}" />"><e:forHtml value="First Name" /></label>
-            <input type="text" id="<e:forHtmlAttribute value="${input.id}" />" name="<e:forHtmlAttribute value="${input.id}" />">
-        </div>
-        <div class="field">
-            <label for="<e:forHtmlAttribute value="${input.id}" />"><e:forHtml value="Last Name" /></label>
-            <input type="text" id="<e:forHtmlAttribute value="${input.id}" />" name="<e:forHtmlAttribute value="${input.id}" />">
-        </div>
+        <c:forEach var="input" items='${requestScope.data["inputs"]}'></c:forEach>
+            <div class="field">
+                <label for="<e:forHtmlAttribute value="${input.id}" />"><e:forHtml value="${input.label}" /></label>
+                <input type="text" id="<e:forHtmlAttribute value="${input.id}" />" name="<e:forHtmlAttribute value="${input.id}" />">
+            </div>
+        </c:forEach>    
         <input type="hidden" id="promptResp" name="promptResp" value="true">
         <input type="hidden" id="promptId" name="promptId" value="${requestScope.promptId}">
         <input type="submit" class="ui primary medium button" value="Submit">
