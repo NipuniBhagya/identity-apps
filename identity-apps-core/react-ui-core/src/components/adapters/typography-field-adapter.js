@@ -19,7 +19,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { useTranslations } from "../../hooks/use-translations";
-import { getTranslationByKey } from "../../utils/i18n-utils";
+import { resolveElementText } from "../../utils/i18n-utils";
 
 const TypographyAdapter = ({ component }) => {
     const { variant, properties } = component;
@@ -31,7 +31,7 @@ const TypographyAdapter = ({ component }) => {
         case "H3":
             return (
                 <h3 className={ "ui header mb-1" + className } style={ styles }>
-                    { getTranslationByKey(translations, text) }
+                    { resolveElementText(translations, text) }
                 </h3>
             );
         case "H1":

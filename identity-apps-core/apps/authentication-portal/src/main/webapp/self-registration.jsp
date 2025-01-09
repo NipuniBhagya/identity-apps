@@ -40,6 +40,8 @@
     String local = "en-US";
     String jsonFilePath = application.getRealPath("/i18n/translations/" + local + ".json");
     String translationsJson = "{}";
+    String state = request.getParameter("state");
+    String code = request.getParameter("code");
     
     try {
         byte[] jsonData = Files.readAllBytes(Paths.get(jsonFilePath));
@@ -81,7 +83,7 @@
       </layout:component>
       <layout:component componentName="MainSection">
           <div class="ui segment left aligned">
-              <div id="react-root">
+              <div id="react-root" class="react-ui-container"/>
           </div>
       </layout:component>
       <layout:component componentName="ProductFooter">
@@ -114,6 +116,50 @@
     <script src="${pageContext.request.contextPath}/libs/react/react-dom.production.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/react-ui-core.min.js"></script>
 
+    <style>
+        .content-container {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            min-height: 200px;
+        }
+
+        .content-container.loaded {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .content-container.loading {
+            opacity: 0.7;
+            transition: height 0.7s ease, opacity 0.7s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f47c3c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .content-container.loading.hidden {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 30%;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof React === 'undefined') {
@@ -127,8 +173,8 @@
                 const apiUrl = "${pageContext.request.contextPath}/util/self-registration-api.jsp";
                 const locale = "en-US";
                 const translations = <%= translationsJson %>;
+                const code = "<%= code != null ? code : null %>"
 
-                // Content component definition
                 const Content = () => {
                     const [data, setData] = useState(null);
                     const [blocks, setBlocks] = useState([]);
@@ -136,32 +182,37 @@
                     const [loading, setLoading] = useState(true);
                     const [error, setError] = useState(null);
                     const [postBody, setPostBody] = useState(null);
-                    const [formState, setFormState] = useState({});
 
-                    // Define the action handler
                     const actionHandler = (action, formData) => {
                         setPostBody({
                             "flowId": data.flowId,
                             "action": action,
-                            "userData": [
-                                {
-                                    "inputs": formData
-                                }
-                            ]
+                            "inputs": formData
                         });
                     };
 
-                    const formStateHandler = (name, value) => {
-                        setFormState(prevState => ({
-                            ...prevState,
-                            [name]: value
-                        }));
+                    const handleExternalRedirection = (url) => {
+                        window.location.href = url;
                     };
 
                     useEffect(() => {
-                        if (!postBody) {
+                        const flowId = localStorage.getItem("flowId");
+
+                        if (code) {
                             setPostBody({
-                                "applicationId": ""
+                                "flowId": flowId,
+                                "action": "GoogleOIDCAuthenticator",
+                                "inputs": {
+                                    "code": code
+                                }
+                            });
+                        }
+                    }, [ code ]);
+
+                    useEffect(() => {
+                        if (!postBody && code === "null") {
+                            setPostBody({
+                                "applicationId": "new-application",
                             });
                         }
 
@@ -176,40 +227,60 @@
                                 if (!response.ok) {
                                     throw new Error('Network response was not ok');
                                 }
+
                                 return response.json();
                             })
                             .then((data) => {
+                                if (!data) {
+                                    return;
+                                }
+
+                                if (data.status === "COMPLETE") {
+                                    window.location.href = "https://localhost:9443/myaccount";
+                                    localStorage.clear();
+                                }
+
+                                if (data.status === "EXTERNAL_REDIRECTION") {
+                                    handleExternalRedirection(data.redirectUrl);
+
+                                    return;
+                                }
+
+                                if (data.flowId) {
+                                    localStorage.setItem("flowId", data.flowId);
+                                }
+
                                 setData(data);
-                                setLoading(false);
+                                setBlocks(data.blocks || []);
+                                setElements(data.elements || []);
                             })
                             .catch((error) => {
                                 setError(error);
                                 setLoading(false);
+                            })
+                            .finally(() => {
+                                setLoading(false);
                             });
                     }, [postBody]);
-
-                    useEffect(() => {
-                        if (data) {
-                            setBlocks(data.blocks || []);
-                            setElements(data.elements || []);
-                        }
-                    }, [data]);
-
-                    if (loading) {
-                        return createElement('div', null, 'Loading...');
-                    }
 
                     if (error) {
                         return createElement('div', null, `Error: ${error.message}`);
                     }
 
-                    if (!elements || elements.length === 0) {
-                        return createElement('div', null, 'No elements to render.');
-                    }
-        
+                    if (loading || (!elements || elements.length === 0)) {
+                        return createElement(
+                            "div",
+                            { className: `content-container loading ${!loading ? "hidden" : ""}` },
+                            createElement(
+                                "div",
+                                { className: "spinner" }
+                            )
+                        );
+                    } 
+
                     return createElement(
-                        Fragment,
-                        null,
+                        "div",
+                        { className: "content-container loaded" },
                         createElement(
                             DynamicContent,
                             {
@@ -220,10 +291,9 @@
                                 handleRequestBody: actionHandler,
                             }
                         )
-                    ); 
+                    );
                 };
                 
-                // Rendering the Content component into the DOM
                 ReactDOM.render(
                     createElement(
                         I18nProvider,

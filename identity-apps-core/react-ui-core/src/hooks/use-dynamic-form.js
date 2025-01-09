@@ -23,7 +23,7 @@ const useDynamicForm = (fields) => {
     const [ formState, setFormState ] = useState({
         dirtyFields: {},
         disabled: false,
-        errors: {},
+        errors: [],
         isDirty: false,
         isLoading: false,
         isValidating: false,
@@ -48,7 +48,24 @@ const useDynamicForm = (fields) => {
         }));
     }, [ formErrors ]);
 
-    // Handle changes in form fields
+    const handleFieldError = useCallback((name, error) => {
+        setFormState((prev) => {
+            const updatedErrors = { ...prev.errors };
+
+            if (error) {
+                updatedErrors[name] = error[0]?.error || "Unknown error.";
+            } else {
+                delete updatedErrors[name];
+            }
+
+            return {
+                ...prev,
+                errors: updatedErrors,
+                isValid: Object.keys(updatedErrors).length === 0
+            };
+        });
+    }, []);
+
     const handleChange = useCallback((name, value) => {
         setFormState((prev) => {
             const updatedValues = {
@@ -63,44 +80,61 @@ const useDynamicForm = (fields) => {
                     ...prev.touched,
                     [name]: true
                 },
-                isDirty: true
+                isDirty: value !== ""
             };
         });
     }, [ fields ]);
 
-    const handleSubmit = useCallback((onSubmit) => (event) => {
-
+    const handleSubmit = (onSubmit) => (event) => {
         event.preventDefault();
 
-        setFormState((prev) => ({ ...prev, isSubmitting: true }));
+        let errors = [];
 
-        let hasErrors = false;
-        const newErrors = {};
+        fields.forEach(field => {
+            const fieldValue = formState.values[field.properties.name];
 
-        fields.forEach((field) => {
+            if (field.properties.required && !fieldValue) {
+                errors.push({
+                    label: field.properties.name,
+                    error: "This field is required."
+                });
+            }
 
-            const fieldErrors = formState.errors[field.properties.name];
-
-            if (fieldErrors && fieldErrors.length > 0) {
-                hasErrors = true;
-                newErrors[field.properties.name] = fieldErrors;
+            if (field.properties.validation) {
+                field.properties.validation.forEach(rule => {
+                    if (rule.type === "MIN_LENGTH" && fieldValue.length < rule.value) {
+                        errors.push({
+                            label: field.properties.name,
+                            error: `Must be at least ${rule.value} characters.`
+                        });
+                    }
+                });
             }
         });
 
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            setFormState((prev) => ({
+                ...prev,
+                errors,
+                isValid: false
+            }));
+
+            return;
+        }
+
         setFormState((prev) => ({
             ...prev,
-            errors: newErrors,
-            isSubmitting: false
+            isValid: true
         }));
 
-        if (!hasErrors) {
-            onSubmit(event.nativeEvent.submitter.name, formState.values);
-        }
-    }, [ fields, formState.values ]);
+        onSubmit(event.nativeEvent.submitter.name, formState.values);
+    };
 
     return {
         formState,
         handleChange,
+        handleFieldError,
         handleFormErrors: setFormErrors,
         handleSubmit
     };

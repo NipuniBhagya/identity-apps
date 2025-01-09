@@ -28,7 +28,7 @@ const DynamicContent = ({ content, handleRequestBody }) => {
     const renderBlock = (block) => {
         if (!block) return null;
 
-        const blockElements = block.nodes
+        const blockElements = block.elements
             .map((nodeId) => {
                 const element = content.elements.find((el) => el.id === nodeId);
 
@@ -66,7 +66,7 @@ const DynamicContent = ({ content, handleRequestBody }) => {
             }
 
             // Render BLOCK elements
-            const block = content.blocks.find((blk) => blk.nodes.includes(element.id));
+            const block = content.blocks.find((blk) => blk.elements.includes(element.id));
 
             if (block && !renderedElementIds.has(element.id)) {
                 return renderBlock(block);

@@ -22,21 +22,25 @@ import useDynamicForm from "../hooks/use-dynamic-form";
 
 const Form = ({ formSchema, onSubmit }) => {
     const {
+        formState,
         handleChange,
         handleSubmit,
+        handleFieldError,
         handleFormErrors
     } = useDynamicForm(formSchema);
 
     return (
         <div className="segment-form">
-            <form onSubmit={ handleSubmit(onSubmit) } className="ui large form">
+            <form noValidate onSubmit={ (event) => handleSubmit(onSubmit)(event) } className="ui large form">
                 {
                     formSchema.map((field, index) => (
                         <Field
                             key={ index }
                             component={ field }
+                            formState={ formState }
                             formStateHandler={ handleChange }
                             formErrorHandler={ handleFormErrors }
+                            formFieldError={ handleFieldError }
                         />
                     ))
                 }

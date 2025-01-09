@@ -20,11 +20,14 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
 import { useTranslations } from "../../hooks/use-translations";
-import { getTranslationByKey } from "../../utils/i18n-utils";
+import { resolveElementText } from "../../utils/i18n-utils";
+import { getConnectionLogo } from "../../utils/ui-utils";
 
 const ButtonAdapter = ({ component, handleButtonAction }) => {
 
     const { translations } = useTranslations();
+    const name = component.action && component.action.executors && component.action.executors.length > 0
+        ? component.action.executors[0].name : "";
 
     switch (component.variant) {
         case "PRIMARY":
@@ -33,10 +36,10 @@ const ButtonAdapter = ({ component, handleButtonAction }) => {
                     <button
                         className={ classNames("ui primary fluid large button", component.properties.className) }
                         type={ component.properties.type }
-                        name={ component.action.name }
+                        name={ name }
                         onClick={ !component.properties.type === "submit" ? handleButtonAction : null }
                     >
-                        { getTranslationByKey(translations, component.properties.text) }
+                        { resolveElementText(translations, component.properties.text) }
                     </button>
                 </div>
             );
@@ -49,11 +52,11 @@ const ButtonAdapter = ({ component, handleButtonAction }) => {
                             classNames("ui secondary fluid large button",
                                 `${ component.properties.className } secondary`)
                         }
-                        name={ component.action.name }
+                        name={ name }
                         onClick={ !component.properties.type === "submit" ? handleButtonAction : null }
                         style={ component.properties.styles }
                     >
-                        { getTranslationByKey(translations, component.properties.text) }
+                        { resolveElementText(translations, component.properties.text) }
                     </button>
                 </div>
             );
@@ -65,21 +68,26 @@ const ButtonAdapter = ({ component, handleButtonAction }) => {
                         className={ `${component.properties.className} link` }
                         style={ component.properties.styles }
                     >
-                        { getTranslationByKey(translations, component.properties.text) }
+                        { resolveElementText(translations, component.properties.text) }
                     </button>
                 </div>
             );
-        case "SOCIAL_BUTTON":
+        case "SOCIAL":
             return (
-                <div className="button mt-4">
+                <div className="social-login mt-4">
                     <button
                         type={ component.properties.type }
                         className={ classNames("ui button", `${ component.properties.className } social`) }
-                        name={ component.action.name }
+                        name={ name }
                         style={ component.properties.styles }
-                        onClick={ !component.properties.type === "submit" ? handleButtonAction : null }
+                        onClick={ () => handleButtonAction(name, {}) }
                     >
-                        { getTranslationByKey(translations, component.properties.text) }
+                        <img
+                            className="ui image"
+                            src={ getConnectionLogo(name) }
+                            alt="Connection Login icon"
+                            role="presentation"></img>
+                        <span>{ resolveElementText(translations, component.properties.text) }</span>
                     </button>
                 </div>
             );
@@ -88,12 +96,12 @@ const ButtonAdapter = ({ component, handleButtonAction }) => {
                 <div className="button mt-4">
                     <button
                         type={ component.type }
-                        name={ component.action.name }
+                        name={ name }
                         className={ classNames("ui button", component.properties.className) }
                         style={ component.properties.styles }
                         onClick={ !component.properties.type === "submit" ? handleButtonAction : null }
                     >
-                        { getTranslationByKey(translations, component.properties.text) }
+                        { resolveElementText(translations, component.properties.text) }
                     </button>
                 </div>
             );

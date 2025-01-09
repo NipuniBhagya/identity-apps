@@ -24,49 +24,40 @@ import { useTranslations } from "../../hooks/use-translations";
 import { resolveElementText } from "../../utils/i18n-utils";
 import { getInputIconClass } from "../../utils/ui-utils";
 import ValidationCriteria from "../validation-criteria";
-import ValidationError from "../validation-error";
+import { DateInput } from "semantic-ui-calendar-react";
 
-const TextFieldAdapter = ({ component, formState, formStateHandler, fieldErrorHandler }) => {
+const DateFieldAdapter = ({ component, formState, formStateHandler, fieldErrorHandler }) => {
 
-    const { name, required, styles, label, placeholder, rest, validation } = component.properties;
+    const { name, required, label, placeholder, validation } = component.properties;
 
     const { translations } = useTranslations();
     const { fieldErrors, validate } = useFieldValidation(validation);
 
-    const [ value, setValue ] = useState("");
-
     const formError = formState?.errors?.length > 0 && formState?.errors?.filter(error => error.label === name);
     const fieldError = formError[0]?.error || (fieldErrors.length > 0 ? fieldErrors[0]?.error : null);
+
+    const [ value, setValue ] = useState("");
 
     useEffect(() => {
         formStateHandler(component.properties.name, value);
     }, [ value ]);
 
-    const handleFieldChange = (value) => {
-        if (validation) {
-            const isValid = validate({ name, required }, value);
-            fieldErrorHandler(name, isValid ? null : fieldErrors);
-        }
-    };
-
     const inputIconClass = getInputIconClass(name);
 
     return (
-        <div className={ classNames("field", required ? "required" : null) } style={ styles }>
+        <div className={ classNames("field", required ? "required" : null) } style={ { width: "100%" } }>
             <label htmlFor={ name }>{ resolveElementText(translations, label) }</label>
             <div className={ classNames("ui fluid input", inputIconClass ? "left icon" : null) }>
-                <input
-                    placeholder={ resolveElementText(translations, placeholder) }
-                    onChange={ (e) => setValue(e.target.value) }
-                    onBlur={ (e) => handleFieldChange(e.target.value) }
+                <DateInput
+                    name={ name }
+                    placeholder={ placeholder }
+                    iconPosition="left"
+                    onChange={ (event, { value }) => setValue(value) }
                     required={ required }
-                    { ...rest }
+                    clearable
+                    closeOnMouseLeave
+                    closable
                 />
-                {
-                    inputIconClass
-                        ? <i aria-hidden="true" className={ `${ getInputIconClass(name) } icon` }></i>
-                        : null
-                }
             </div>
             {
                 validation && validation.type === "CRITERIA" && validation.showValidationCriteria (
@@ -78,9 +69,9 @@ const TextFieldAdapter = ({ component, formState, formStateHandler, fieldErrorHa
     );
 };
 
-TextFieldAdapter.propTypes = {
+DateFieldAdapter.propTypes = {
     component: PropTypes.object.isRequired,
     formStateHandler: PropTypes.func.isRequired
 };
 
-export default TextFieldAdapter;
+export default DateFieldAdapter;

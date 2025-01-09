@@ -61,7 +61,11 @@
             "variant": "PRIMARY",
             "action": {
                 "type": "NAVIGATOR",
-                "name": "EmailOTPVerifier3"
+                "executors": [
+                    {
+                        "name": "EmailOTPVerifier3"
+                    }
+                ]
             },
             "properties": {
                 "type": "submit",

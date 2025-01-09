@@ -52,3 +52,17 @@ export const getLocaleTranslationMap = async (basePath, locale = "en-US") => {
 
     return new Map(Object.entries(translationObject));
 };
+
+export const resolveElementText = (translations, text) => {
+    if (!text) {
+        return "";
+    }
+
+    const i18nKeyMatch = text.match(/^\{(.+)\}$/);
+
+    if (i18nKeyMatch) {
+        return getTranslationByKey(translations, i18nKeyMatch[1]);
+    }
+
+    return text;
+};

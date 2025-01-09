@@ -32,6 +32,8 @@ const ValidationCriteria = ({ validationConfig, errors, value }) => {
 
     const { translations } = useTranslations();
 
+    console.log("Errors", errors);
+
     const PolicyValidationStatus = ({ isValid }) => {
         return (
             <div>
@@ -59,10 +61,10 @@ const ValidationCriteria = ({ validationConfig, errors, value }) => {
     };
 
     return (
-        <div className="validation-criteria">
+        <div className="validation-criteria mt-1">
             {
                 validationConfig &&
-                validationConfig.map((validation, index) => {
+                validationConfig.map((validation) => {
                     if (validation.type === "CRITERIA" && validation.showValidationCriteria) {
                         return validation.criteria.map((criterion, criteriaIndex) => {
                             const hasError = errors.some(
@@ -80,13 +82,6 @@ const ValidationCriteria = ({ validationConfig, errors, value }) => {
                                 </div>
                             );
                         });
-                    } else {
-                        return (
-                            <div className="field form-group error" key={ index }>
-                                <i className="pr-2 red exclamation circle fitted icon"></i>
-                                <span className="validation-error-message">{ errors[ errors.length - 1 ].error }</span>
-                            </div>
-                        );
                     }
                 })
             }

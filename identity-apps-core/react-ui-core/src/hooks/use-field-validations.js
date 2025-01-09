@@ -98,7 +98,7 @@ const useFieldValidation = (validationConfig) => {
         return null;
     }, []);
 
-    const validate = useCallback((value) => {
+    const validate = useCallback((properties, value) => {
         let validationErrors = [];
 
         if (validationConfig) {
@@ -128,6 +128,13 @@ const useFieldValidation = (validationConfig) => {
                     }
                 }
             }
+        }
+
+        if (properties.required && !value) {
+            validationErrors.push({
+                label: properties.name,
+                error: "This field is required."
+            });
         }
 
         setFieldErrors(validationErrors);

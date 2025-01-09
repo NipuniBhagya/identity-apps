@@ -21,7 +21,7 @@ export { default as TypographyFieldAdapter } from "./components/adapters/typogra
 export { default as InputFieldAdapter } from "./components/adapters/input-field-adapter";
 export { default as Divider } from "./components/divider";
 export { default as Form } from "./components/form";
-export { default as ValidationCriteria } from "./components/field-validation";
+export { default as ValidationCriteria } from "./components/validation-criteria";
 export { default as Field } from "./components/field";
 export { default as DynamicContent } from "./components/dynamic-content";
 

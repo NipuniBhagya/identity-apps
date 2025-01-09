@@ -23,7 +23,7 @@ import InputFieldAdapter from "./adapters/input-field-adapter";
 import TypographyAdapter from "./adapters/typography-field-adapter";
 import DividerAdapter from "./divider";
 
-const Field = ({ component, formStateHandler, formErrorHandler }) => {
+const Field = ({ component, formState, formStateHandler, formErrorHandler, formFieldError }) => {
 
     switch (component.type) {
         case "TYPOGRAPHY":
@@ -32,8 +32,10 @@ const Field = ({ component, formStateHandler, formErrorHandler }) => {
             return (
                 <InputFieldAdapter
                     component={ component }
+                    formState={ formState }
                     formStateHandler={ formStateHandler }
                     formErrorHandler={ formErrorHandler }
+                    formFieldError={ formFieldError }
                 />
             );
         case "BUTTON":
@@ -41,7 +43,14 @@ const Field = ({ component, formStateHandler, formErrorHandler }) => {
         case "DIVIDER":
             return <DividerAdapter component={ component } />;
         default:
-            return null;
+            return (
+                <InputFieldAdapter
+                    component={ component }
+                    formState={ formState }
+                    formStateHandler={ formStateHandler }
+                    formErrorHandler={ formErrorHandler }
+                />
+            );
     }
 };
 

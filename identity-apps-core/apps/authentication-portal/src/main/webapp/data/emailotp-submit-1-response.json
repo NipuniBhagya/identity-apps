@@ -42,7 +42,11 @@
             "variant": "PRIMARY",
             "action": {
                 "type": "NAVIGATOR",
-                "name": "EmailOTPVerifier2"
+                "executors": [
+                    {
+                        "name": "EmailOTPVerifier2"
+                    }
+                ]
             },
             "properties": {
                 "type": "submit",

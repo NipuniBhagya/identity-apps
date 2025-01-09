@@ -14,12 +14,13 @@
         "transpile-react-jsx-components": "pnpm webpack --config webpack.config.js"
     },
     "dependencies": {
-        "@wso2is/theme": "^2.1.6",
-        "react": "^18.3.1"
+        "@wso2is/theme": "/Users/wso2/Public/WSO2/sources/on-prem/frontend/identity-apps/modules/theme",
+        "react": "^18.3.1",
+        "semantic-ui-calendar-react": "^0.15.3"
     },
     "devDependencies": {
-        "@babel/core": "^7.25.9",
         "@babel/cli": "^7.25.9",
+        "@babel/core": "^7.25.9",
         "@babel/preset-env": "^7.25.9",
         "@babel/preset-react": "^7.25.9",
         "babel-loader": "^9.2.1",

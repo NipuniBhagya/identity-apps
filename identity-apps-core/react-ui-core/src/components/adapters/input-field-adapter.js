@@ -18,34 +18,64 @@
 
 import PropTypes from "prop-types";
 import React from "react";
+import CheckboxFieldAdapter from "./checkbox-field-adapter";
 import CountryFieldAdapter from "./country-field-adapter";
 import OTPFieldAdapter from "./otp-field-adapter";
 import PasswordFieldAdapter from "./password-field-adapter";
 import TextFieldAdapter from "./text-field-adapter";
+import DateFieldAdapter from "./date-field-adapter";
 
-const InputFieldAdapter = ({ component, formStateHandler, formErrorHandler }) => {
+const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHandler, formFieldErrorHandler }) => {
 
     switch (component.variant) {
         case "TEXT":
             return (
                 <TextFieldAdapter
                     component={ component }
+                    formState={ formState }
                     formStateHandler={ formStateHandler }
-                    formErrorHandler={ formErrorHandler }
+                    fieldErrorHandler={ formFieldErrorHandler }
+                />
+            );
+        case "EMAIL":
+            return (
+                <TextFieldAdapter
+                    component={ component }
+                    formState={ formState }
+                    formStateHandler={ formStateHandler }
+                    fieldErrorHandler={ formFieldErrorHandler }
                 />
             );
         case "DATE":
+            return (
+                <DateFieldAdapter
+                    component={ component }
+                    formState={ formState }
+                    formStateHandler={ formStateHandler }
+                    fieldErrorHandler={ formFieldErrorHandler }
+                />
+            );
+        case "COUNTRY":
             return <CountryFieldAdapter component={ component } formStateHandler={ formStateHandler } />;
         case "PASSWORD":
             return (
                 <PasswordFieldAdapter
                     component={ component }
+                    formState={ formState }
                     formStateHandler={ formStateHandler }
+                    formErrorHandler={ formErrorHandler }
                 />
             );
         case "OTP":
             return (
                 <OTPFieldAdapter
+                    component={ component }
+                    formStateHandler={ formStateHandler }
+                />
+            );
+        case "CHECKBOX":
+            return (
+                <CheckboxFieldAdapter
                     component={ component }
                     formStateHandler={ formStateHandler }
                 />
@@ -57,8 +87,8 @@ const InputFieldAdapter = ({ component, formStateHandler, formErrorHandler }) =>
 
 InputFieldAdapter.propTypes = {
     component: PropTypes.object.isRequired,
-    formState: PropTypes.object.isRequired,
-    formStateHandler: PropTypes.func.isRequired
+    formErrorHandler: PropTypes.object,
+    formStateHandler: PropTypes.func.isRequired,
 };
 
 export default InputFieldAdapter;

@@ -21,15 +21,21 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import useFieldValidation from "../../hooks/use-field-validations";
 import { useTranslations } from "../../hooks/use-translations";
-import { getTranslationByKey } from "../../utils/i18n-utils";
-import ValidationCriteria from "../field-validation";
+import { resolveElementText } from "../../utils/i18n-utils";
+import ValidationCriteria from "../validation-criteria";
+import ValidationError from "../validation-error";
 
-const PasswordFieldAdapter = ({ component, formStateHandler, formErrorHandler }) => {
+const PasswordFieldAdapter = ({ component, formState, formStateHandler, formErrorHandler }) => {
 
     const { required, name, label, placeholder, rest, validation } = component.properties;
 
     const { translations } = useTranslations();
     const { fieldErrors, validate } = useFieldValidation(validation);
+
+    const fieldError = formState && formState.errors && formState.errors.length > 0 &&
+        formState.errors.filter(error => error.label === component.properties.name);
+    const error = fieldError ? fieldError[0] && fieldError[0].error :
+        fieldErrors && fieldErrors.length >= 0 && fieldErrors[0] && fieldErrors[0].error;
 
     const [ password, setPassword ] = useState("");
     const [ showPassword, setShowPassword ] = useState(false);
@@ -38,7 +44,9 @@ const PasswordFieldAdapter = ({ component, formStateHandler, formErrorHandler })
         formStateHandler(name, password);
     }, [ password ]);
 
-    const handleFieldValidation = (value) => {
+    const handlePasswordChange = (value) => {
+        setPassword(value);
+
         if (validation) {
             validate(value);
             formErrorHandler(component.properties.name, fieldErrors);
@@ -50,7 +58,7 @@ const PasswordFieldAdapter = ({ component, formStateHandler, formErrorHandler })
             id="passwordField"
             className={ classNames("field", required ? "required" : null) }
         >
-            <label>{ getTranslationByKey(translations, label) }</label>
+            <label>{ resolveElementText(translations, label) }</label>
             <div className="ui fluid left icon input addon-wrapper">
                 <input
                     className="form-control"
@@ -58,9 +66,8 @@ const PasswordFieldAdapter = ({ component, formStateHandler, formErrorHandler })
                     type={ showPassword ? "text" : "password" }
                     id="password"
                     value={ password }
-                    placeholder={ getTranslationByKey(translations, placeholder) }
-                    onChange={ (e) => setPassword(e.target.value) }
-                    onBlur={ (e) => handleFieldValidation(e.target.value) }
+                    placeholder={ resolveElementText(translations, placeholder) }
+                    onChange={ (e) => handlePasswordChange(e.target.value) }
                     { ...rest }
                 />
                 <i aria-hidden="true" className="lock icon"></i>
@@ -70,9 +77,16 @@ const PasswordFieldAdapter = ({ component, formStateHandler, formErrorHandler })
                     onClick={ () => setShowPassword(!showPassword) }
                 />
             </div>
-            { validation && (
-                <ValidationCriteria validationConfig={ validation } errors={ fieldErrors } value={ password } />
-            ) }
+            {
+                validation && validation.type === "CRITERIA" && validation.showValidationCriteria (
+                    <ValidationCriteria validationConfig={ validation } errors={ fieldErrors } value={ password } />
+                )
+            }
+            {
+                (fieldErrors.length > 0 || formState.errors.length > 0) &&  (
+                    <ValidationError error={ error } />
+                )
+            }
             <div className="ui divider hidden"></div>
         </div>
     );

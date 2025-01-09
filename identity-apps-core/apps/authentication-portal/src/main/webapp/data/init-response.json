@@ -31,7 +31,12 @@
                 "dataType": "string",
                 "required": true,
                 "readOnly": false,
-                "validationRegex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+                "validation": [
+                    {
+                        "type": "REQUIRED",
+                        "error": "This field is required."
+                    }
+                ]
             }
         },
         {
@@ -81,7 +86,11 @@
             "variant": "PRIMARY",
             "action": {
                 "type": "EXECUTOR",
-                "name": "PasswordOnboarder"
+                "executors": [
+                    {
+                        "name": "PasswordOnboarder"
+                    }
+                ]
             },
             "properties": {
                 "type": "submit",
@@ -112,7 +121,11 @@
             "variant": "PRIMARY",
             "action": {
                 "type": "EXECUTOR",
-                "name": "EmailOTPVerifier1"
+                "executors": [
+                    {
+                        "name": "EmailOTPVerifier1"
+                    }
+                ]
             },
             "properties": {
                 "type": "submit",
@@ -139,10 +152,17 @@
             "category": "ACTION",
             "type": "BUTTON",
             "deprecated": false,
-            "variant": "SOCIAL_BUTTON",
+            "variant": "SOCIAL",
             "action": {
                 "type": "EXECUTOR",
-                "name": "GoogleSignUp"
+                "executors": [
+                    {
+                        "name": "GoogleOIDCAuthenticator",
+                        "meta": {
+                            "idp": "Google"
+                        }
+                    }
+                ]
             },
             "properties": {
                 "type": "button",
@@ -158,13 +178,13 @@
         {
             "id": "flow-block-attributes-g55dfGuK",
             "nodes": [
-                    "flow-field-username-Rt8uJ6D3",
-                    "flow-field-first-name-r7u4F1GG",
-                    "flow-field-last-name-r7u4F1GG",
-                    "flow-action-password-onboarder-p563u9Yn",
-                   "flow-display-horizontal-divider-67f8uJ6D3",
-                   "flow-action-email-otp-verifier-5t8uJ6D3"   
-      ]
+                "flow-field-username-Rt8uJ6D3",
+                "flow-field-first-name-r7u4F1GG",
+                "flow-field-last-name-r7u4F1GG",
+                "flow-action-password-onboarder-p563u9Yn",
+                "flow-display-horizontal-divider-67f8uJ6D3",
+                "flow-action-email-otp-verifier-5t8uJ6D3"   
+            ]
         }
     ]
 }
