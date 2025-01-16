@@ -77,11 +77,6 @@
             }
             in.close();
 
-            JSONObject responseObject = new JSONObject(apiResponse.toString()); 
-            JSONObject responseObject = new JSONObject(apiResponse.toString()); 
-
-            System.out.println("Response: " + responseObject.toString(2));           
-
             JSONObject responseObject = new JSONObject(apiResponse.toString());
             out.print(responseObject.toString(2));
         } else {

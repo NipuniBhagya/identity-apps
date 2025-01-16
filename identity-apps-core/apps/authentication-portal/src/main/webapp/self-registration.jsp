@@ -35,7 +35,6 @@
     layoutData.put("containerSize", "medium");
 %>
 
-
 <%
     String local = "en-US";
     String jsonFilePath = application.getRealPath("/i18n/translations/" + local + ".json");

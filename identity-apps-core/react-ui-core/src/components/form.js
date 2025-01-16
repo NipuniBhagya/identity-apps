@@ -24,9 +24,8 @@ const Form = ({ formSchema, onSubmit }) => {
     const {
         formState,
         handleChange,
-        handleSubmit,
         handleFieldError,
-        handleFormErrors
+        handleSubmit
     } = useDynamicForm(formSchema);
 
     return (
@@ -39,7 +38,6 @@ const Form = ({ formSchema, onSubmit }) => {
                             component={ field }
                             formState={ formState }
                             formStateHandler={ handleChange }
-                            formErrorHandler={ handleFormErrors }
                             formFieldError={ handleFieldError }
                         />
                     ))

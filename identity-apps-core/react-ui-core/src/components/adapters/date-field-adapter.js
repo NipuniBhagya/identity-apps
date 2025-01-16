@@ -44,21 +44,30 @@ const DateFieldAdapter = ({ component, formState, formStateHandler, fieldErrorHa
 
     const inputIconClass = getInputIconClass(name);
 
+    const handleFieldChange = () => {
+        if (validation) {
+            const isValid = validate({ name, required }, value);
+            fieldErrorHandler(name, isValid ? null : fieldErrors);
+        }
+    };
+
     return (
-        <div className={ classNames("field", required ? "required" : null) } style={ { width: "100%" } }>
+        <div className={ classNames("field", required ? "required" : null) } style={ { width: "100% !important" } }>
             <label htmlFor={ name }>{ resolveElementText(translations, label) }</label>
-            <div className={ classNames("ui fluid input", inputIconClass ? "left icon" : null) }>
-                <DateInput
-                    name={ name }
-                    placeholder={ placeholder }
-                    iconPosition="left"
-                    onChange={ (event, { value }) => setValue(value) }
-                    required={ required }
-                    clearable
-                    closeOnMouseLeave
-                    closable
-                />
-            </div>
+            <DateInput
+                name={ name }
+                placeholder={ placeholder }
+                iconPosition="left"
+                onChange={ (event, { value }) => setValue(value) }
+                onBlur={ handleFieldChange }
+                value={ value }
+                required={ required }
+                clearable
+                closeOnMouseLeave
+                closable
+                pickerStyle={ { width: "100% !important" } }
+                pickerWidth="100% !important"
+            />
             {
                 validation && validation.type === "CRITERIA" && validation.showValidationCriteria (
                     <ValidationCriteria validationConfig={ validation } errors={ fieldErrors } value={ value } />

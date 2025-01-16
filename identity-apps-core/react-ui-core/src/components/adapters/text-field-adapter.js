@@ -43,10 +43,8 @@ const TextFieldAdapter = ({ component, formState, formStateHandler, fieldErrorHa
     }, [ value ]);
 
     const handleFieldChange = (value) => {
-        if (validation) {
-            const isValid = validate({ name, required }, value);
-            fieldErrorHandler(name, isValid ? null : fieldErrors);
-        }
+        const isValid = validate({ name, required }, value);
+        fieldErrorHandler(name, isValid ? null : fieldErrors);
     };
 
     const inputIconClass = getInputIconClass(name);

@@ -49,6 +49,7 @@ const useDynamicForm = (fields) => {
     }, [ formErrors ]);
 
     const handleFieldError = useCallback((name, error) => {
+        debugger;
         setFormState((prev) => {
             const updatedErrors = { ...prev.errors };
 
@@ -135,7 +136,6 @@ const useDynamicForm = (fields) => {
         formState,
         handleChange,
         handleFieldError,
-        handleFormErrors: setFormErrors,
         handleSubmit
     };
 };

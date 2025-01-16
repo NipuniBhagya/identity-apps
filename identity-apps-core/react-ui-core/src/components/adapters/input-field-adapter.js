@@ -25,7 +25,7 @@ import PasswordFieldAdapter from "./password-field-adapter";
 import TextFieldAdapter from "./text-field-adapter";
 import DateFieldAdapter from "./date-field-adapter";
 
-const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHandler, formFieldErrorHandler }) => {
+const InputFieldAdapter = ({ component, formState, formStateHandler, formFieldError }) => {
 
     switch (component.variant) {
         case "TEXT":
@@ -34,7 +34,7 @@ const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHa
                     component={ component }
                     formState={ formState }
                     formStateHandler={ formStateHandler }
-                    fieldErrorHandler={ formFieldErrorHandler }
+                    fieldErrorHandler={ formFieldError }
                 />
             );
         case "EMAIL":
@@ -43,7 +43,7 @@ const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHa
                     component={ component }
                     formState={ formState }
                     formStateHandler={ formStateHandler }
-                    fieldErrorHandler={ formFieldErrorHandler }
+                    fieldErrorHandler={ formFieldError }
                 />
             );
         case "DATE":
@@ -52,7 +52,7 @@ const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHa
                     component={ component }
                     formState={ formState }
                     formStateHandler={ formStateHandler }
-                    fieldErrorHandler={ formFieldErrorHandler }
+                    fieldErrorHandler={ formFieldError }
                 />
             );
         case "COUNTRY":
@@ -63,7 +63,7 @@ const InputFieldAdapter = ({ component, formState, formStateHandler, formErrorHa
                     component={ component }
                     formState={ formState }
                     formStateHandler={ formStateHandler }
-                    formErrorHandler={ formErrorHandler }
+                    formErrorHandler={ formFieldError }
                 />
             );
         case "OTP":
