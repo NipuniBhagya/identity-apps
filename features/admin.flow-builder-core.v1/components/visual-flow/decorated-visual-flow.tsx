@@ -36,7 +36,7 @@ import {
 } from "@xyflow/react";
 import classNames from "classnames";
 import cloneDeep from "lodash-es/cloneDeep";
-import React, { FunctionComponent, ReactElement, useCallback } from "react";
+import React, { FunctionComponent, ReactElement, useState, useCallback } from "react";
 import VisualFlow, { VisualFlowPropsInterface } from "./visual-flow";
 import VisualFlowConstants from "../../constants/visual-flow-constants";
 import useAuthenticationFlowBuilderCore from "../../hooks/use-authentication-flow-builder-core-context";
@@ -49,6 +49,7 @@ import generateResourceId from "../../utils/generate-resource-id";
 import resolveKnownEdges from "../../utils/resolve-known-edges";
 import ResourcePanel from "../resource-panel/resource-panel";
 import ElementPropertiesPanel from "../resource-property-panel/resource-property-panel";
+import AIGenerationModal from "../resources/ai-generation-modal";
 
 /**
  * Props interface of {@link DecoratedVisualFlow}
@@ -79,6 +80,9 @@ const DecoratedVisualFlow: FunctionComponent<DecoratedVisualFlowPropsInterface> 
     onWidgetLoad,
     ...rest
 }: DecoratedVisualFlowPropsInterface): ReactElement => {
+
+    const [ showAIGenerationModal, setShowAIGenerationModal ] = useState(false);
+
     const { screenToFlowPosition, updateNodeData } = useReactFlow();
     const [ nodes, setNodes, onNodesChange ] = useNodesState(initialNodes);
     const [ edges, setEdges, onEdgesChange ] = useEdgesState(initialEdges);
@@ -111,6 +115,12 @@ const DecoratedVisualFlow: FunctionComponent<DecoratedVisualFlowPropsInterface> 
             } ]);
         } else if (resource?.resourceType === ResourceTypes.Template) {
             const [ newNodes, newEdges ] = onTemplateLoad(resource);
+
+            if (resource?.type === "GENERATE_WITH_AI") {
+                setShowAIGenerationModal(true);
+
+                return;
+            }
 
             setNodes(() => newNodes);
             setEdges(() => newEdges);
@@ -298,6 +308,14 @@ const DecoratedVisualFlow: FunctionComponent<DecoratedVisualFlowPropsInterface> 
                     </ElementPropertiesPanel>
                 </ResourcePanel>
             </DragDropProvider>
+            {
+                showAIGenerationModal && (
+                    <AIGenerationModal
+                        open={ showAIGenerationModal }
+                        handleModalClose={ () => setShowAIGenerationModal(false) }
+                    />
+                )
+            }
         </div>
     );
 };
