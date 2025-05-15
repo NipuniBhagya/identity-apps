@@ -1,0 +1,7 @@
+[
+    { "label": "Account Settings", "description": "Update your profile and preferences", "icon": "CircleUserIcon" },
+    { "label": "Security", "description": "Manage passwords and 2FA", "icon": "ShieldUserPencilIcon" },
+    { "label": "Billing", "description": "View invoices and payment methods", "icon": "DiamondIcon" },
+    { "label": "Documents", "description": "Access your files and reports", "icon": "DocumentPencilIcon" },
+    { "label": "Notifications", "description": "Manage your alert preferences", "icon": "EnvelopeAtIcon" }
+]

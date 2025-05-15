@@ -1,0 +1,26 @@
+[
+    {
+        "date": "May 15, 2025",
+        "time": "2:11 PM",
+        "device": "Chrome on Windows",
+        "location": "New York, USA",
+        "ip": "192.168.1.1",
+        "status": "Successful"
+    },
+    {
+        "date": "May 15, 2025",
+        "time": "12:16 PM",
+        "device": "Safari on iPhone",
+        "location": "New York, USA",
+        "ip": "192.168.1.2",
+        "status": "Successful"
+    },
+    {
+        "date": "May 14, 2025",
+        "time": "2:16 PM",
+        "device": "Firefox on macOS",
+        "location": "Chicago, USA",
+        "ip": "192.168.1.3",
+        "status": "Successful"
+    }
+]

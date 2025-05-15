@@ -135,11 +135,7 @@ const OverviewPage: FunctionComponent<OverviewPagePropsInterface> = (
             { /* Loads overview component only when user info is loaded.
                 Loads overview component based on user credential type (local/non-local).*/ }
             { isProfileInfoLoading == false && !isProfileSchemaLoading && (
-                <Overview
-                    userSource={ userSource }
-                    enableAlternateWidgetLayout={ enableAlternateWidgetLayout }
-                    userStore={ userStore }
-                />
+                <Overview />
             ) }
         </PageLayout>
     );

@@ -16,188 +16,130 @@
  * under the License.
  */
 
-import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
-import { TestableComponentInterface } from "@wso2is/core/models";
-import React, { FunctionComponent, ReactElement } from "react";
-import { useSelector } from "react-redux";
-import { Divider, Grid, SemanticWIDTHS } from "semantic-ui-react";
-import { AccountSecurityWidget, AccountStatusWidget, ConsentManagementWidget, UserSessionsWidget } from "./widgets";
-import { ProfileWidget } from "./widgets/profile-widget";
-import { AppConstants } from "../../constants";
-import { commonConfig } from "../../extensions";
-import { FeatureConfigInterface } from "../../models";
-import { AppState } from "../../store";
+import Grid from "@oxygen-ui/react/Grid";
+import * as Icons from '@oxygen-ui/react-icons';
+import Box from "@oxygen-ui/react/Box";
+import Button from "@oxygen-ui/react/Button";
+import Card from "@oxygen-ui/react/Card";
+import CardContent from "@oxygen-ui/react/CardContent";
+import Stack from "@oxygen-ui/react/Stack";
+import Table from "@oxygen-ui/react/Table";
+import TableBody from "@oxygen-ui/react/TableBody";
+import TableCell from "@oxygen-ui/react/TableCell";
+import TableHead from "@oxygen-ui/react/TableHead";
+import TableRow from "@oxygen-ui/react/TableRow";
+import Typography from "@oxygen-ui/react/Typography";
+import { ExternalLink } from "lucide-react";
+import React from "react";
+import loginData from "../../data/login-history.json";
+import actions from "../../data/actions.json";
 
-/**
- * Prop types for the overview edit component.
- */
-interface OverviewPropsInterface extends TestableComponentInterface {
-    userSource?: string;
-    enableAlternateWidgetLayout?: boolean;
-    userStore?: string
-}
-
-/**
- * Overview Component
- * @param props - Props injected to the component.
- */
-export const Overview: FunctionComponent<OverviewPropsInterface> = (
-    props: OverviewPropsInterface
-): ReactElement => {
-
-    const {
-        userSource,
-        enableAlternateWidgetLayout,
-        userStore
-    } = props;
-
-    const accessConfig: FeatureConfigInterface = useSelector((state: AppState) => state?.config?.ui?.features);
-    const allowedScopes: string = useSelector((state: AppState) => state?.authenticationInformation?.scope);
-    const hasLocalAccount: boolean = useSelector((state: AppState) => state.authenticationInformation.hasLocalAccount);
-
-    /**
-     * Profile status widget with link to profile.
-     * @param widthComputer - Width for the computer screens.
-     * @param widthMobile - Width for the mobile screens.
-     */
-    const profileStatus = (widthComputer: SemanticWIDTHS, widthMobile: SemanticWIDTHS): React.ReactElement => {
-        return (
-            <>
-                {
-                    hasRequiredScopes(accessConfig?.overview, accessConfig?.overview?.scopes?.read, allowedScopes)
-                    && isFeatureEnabled(accessConfig?.overview,
-                        AppConstants.FEATURE_DICTIONARY.get("OVERVIEW_ACCOUNT_STATUS"))
-                    && (
-                        <Grid.Column computer={ widthComputer } mobile={ widthMobile }>
-                            <ProfileWidget
-                                userSource={ userSource }
-                            />
-                        </Grid.Column>
-                    )
-                }
-            </>
-        );
-    };
-
-    /**
-     * Account Security Widget
-     * @param widthComputer - Width for the computer screens.
-     * @param widthMobile - Width for the mobile screens.
-     */
-    const accountSecurity = (widthComputer: SemanticWIDTHS, widthMobile: SemanticWIDTHS): React.ReactElement => {
-        return (
-            <>
-                {
-                    hasRequiredScopes(accessConfig?.overview, accessConfig?.overview?.scopes?.read, allowedScopes)
-                    && isFeatureEnabled(accessConfig?.overview,
-                        AppConstants.FEATURE_DICTIONARY.get("OVERVIEW_ACCOUNT_SECURITY"))
-                    && (
-                        <Grid.Column computer={ widthComputer } mobile={ widthMobile }>
-                            <AccountSecurityWidget/>
-                        </Grid.Column>
-                    )
-                }
-            </>
-        );
-    };
-
-    /**
-     * Account Status widget with shield (Currently not displayed).
-     * @param widthComputer - Width for the computer screens.
-     * @param widthMobile - Width for the mobile screens.
-     */
-    const accountStatus = (widthComputer: SemanticWIDTHS, widthMobile: SemanticWIDTHS): React.ReactElement => {
-        return (
-            <>
-                {
-                    hasRequiredScopes(accessConfig?.overview, accessConfig?.overview?.scopes?.read, allowedScopes)
-                    && isFeatureEnabled(accessConfig?.overview,
-                        AppConstants.FEATURE_DICTIONARY.get("OVERVIEW_ACCOUNT_STATUS"))
-                    && (
-                        <Grid.Column computer={ widthComputer } mobile={ widthMobile }>
-                            <AccountStatusWidget/>
-                        </Grid.Column>
-                    )
-                }
-            </>
-        );
-    };
-
-    /**
-     * Session Management Widget (Currently not displayed).
-     * @param widthComputer - Width for the computer screens.
-     * @param widthMobile - Width for the mobile screens.
-     */
-    const accountActivity = (widthComputer: SemanticWIDTHS, widthMobile: SemanticWIDTHS): React.ReactElement => {
-        return (
-            <>
-                {
-                    hasRequiredScopes(accessConfig?.overview, accessConfig?.overview?.scopes?.read, allowedScopes)
-                    && isFeatureEnabled(accessConfig?.overview,
-                        AppConstants.FEATURE_DICTIONARY.get("OVERVIEW_ACCOUNT_ACTIVITY"))
-                    && (
-                        <Grid.Column computer={ widthComputer } mobile={ widthMobile }>
-                            <UserSessionsWidget/>
-                        </Grid.Column>
-                    )
-                }
-            </>
-        );
-    };
-
-    /**
-     * Consent Management Widget (Currently not displayed).
-     * @param widthComputer - Width for the computer screens.
-     * @param widthMobile - Width for the mobile screens.
-     */
-    const consents = (widthComputer: SemanticWIDTHS, widthMobile: SemanticWIDTHS): React.ReactElement => {
-        return (
-            <>
-                {
-                    hasLocalAccount &&
-                    hasRequiredScopes(accessConfig?.overview, accessConfig?.overview?.scopes?.read, allowedScopes)
-                    && isFeatureEnabled(accessConfig?.overview,
-                        AppConstants.FEATURE_DICTIONARY.get("OVERVIEW_CONSENTS"))
-                    && (
-                        <Grid.Column computer={ widthComputer } mobile={ widthMobile }>
-                            <ConsentManagementWidget/>
-                        </Grid.Column>
-                    )
-                }
-            </>
-        );
-    };
-
+export const Overview = () => {
     return (
-        <Grid className="overview-page">
-            <Divider hidden />
-            <Grid.Row>
-                { !enableAlternateWidgetLayout
-                    ?
-                    (<>
-                        { accountStatus(9, 16) }
-                        { accountActivity(7, 16) }
-                        { accountSecurity(8, 16) }
-                        { consents(8, 16) }
-                    </>)
-                    : !commonConfig.utils.isShowAdditionalWidgetAllowed(userStore)
-                        ?
-                        (<>
-                            { profileStatus(8, 16) }
-                            { accountSecurity(8, 16) }
-                        </>)
-                        : (<Grid>
-                            <Grid.Row>
-                                { profileStatus(8, 16) }
-                                { accountSecurity(8, 16) }
-                            </Grid.Row>
-                            <Grid.Row>
-                                { accountActivity(8, 16) }
-                                { consents(8, 16) }
-                            </Grid.Row>
-                        </Grid>)
-                }
-            </Grid.Row>
-        </Grid>
+        <Box>
+            <Typography variant="h6" mt={ 4 } mb={ 2 }>
+                Quick Actions
+            </Typography>
+            <Grid container spacing={2} justifyContent="center">
+                { actions.map((action, index) => {
+                    const Icon = Icons[action.icon];
+                    return (
+                    <Grid xs={12} sm={6} md={4} lg={2.4} key={index}>
+                        <Card
+                        variant="outlined"
+                        sx={{
+                            height: '100%',
+                            minHeight: 240,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            borderRadius: '12px',
+                            padding: '0px 12px'
+                        }}
+                        >
+                        <CardContent>
+                            <Stack alignItems="center" spacing={2}>
+                            <Box
+                                sx={{
+                                backgroundColor: '#F0F0F0',
+                                borderRadius: '50%',
+                                padding: 2,
+                                display: 'inline-flex',
+                                }}
+                            >
+                                {Icon && <Icon sx={{ fontSize: 32 }} />}
+                            </Box>
+                            <Typography align="center" variant="subtitle1" fontWeight="bold">
+                                {action.label}
+                            </Typography>
+                            <Typography align="center" variant="body2" color="text.secondary">
+                                {action.description}
+                            </Typography>
+                            </Stack>
+                        </CardContent>
+                        </Card>
+                    </Grid>
+                    );
+                }) }
+            </Grid>
+
+            <Box 
+                mt={ 4 } 
+                sx={{ 
+                    backgroundColor: '#FFFFFF', 
+                    padding: 4, 
+                    borderRadius: 2, 
+                    border: '1px solid #0000001f' 
+                }}
+            >
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h6">Recent Login Activity</Typography>
+                    <Button variant="outlined" endIcon={ <ExternalLink size={ 16 } /> }>
+                        View All
+                    </Button>
+                </Box>
+                <Typography variant="body2" mt={ 1 } mb={ 2 }>
+                    Monitor your recent account sign-ins for suspicious activity
+                </Typography>
+
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Date & Time</TableCell>
+                            <TableCell>Device</TableCell>
+                            <TableCell>Location</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        { loginData.map((row, index) => (
+                            <TableRow key={ index }>
+                                <TableCell>
+                                    <Typography variant="body2">{ row.date }</Typography>
+                                    <Typography variant="caption">{ row.time }</Typography>
+                                </TableCell>
+                                <TableCell>{ row.device }</TableCell>
+                                <TableCell>
+                                    { row.location }
+                                    <br />
+                                    <Typography variant="caption">IP: { row.ip }</Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="body2" color="success.main">
+                                        ✔ { row.status }
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant="text" size="small">
+                                        Report
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        )) }
+                    </TableBody>
+                </Table>
+            </Box>
+        </Box>
     );
 };
