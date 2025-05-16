@@ -16,12 +16,11 @@
  * under the License.
  */
 
-import Grid from "@oxygen-ui/react/Grid";
-import * as Icons from '@oxygen-ui/react-icons';
 import Box from "@oxygen-ui/react/Box";
 import Button from "@oxygen-ui/react/Button";
 import Card from "@oxygen-ui/react/Card";
 import CardContent from "@oxygen-ui/react/CardContent";
+import Grid from "@oxygen-ui/react/Grid";
 import Stack from "@oxygen-ui/react/Stack";
 import Table from "@oxygen-ui/react/Table";
 import TableBody from "@oxygen-ui/react/TableBody";
@@ -29,10 +28,11 @@ import TableCell from "@oxygen-ui/react/TableCell";
 import TableHead from "@oxygen-ui/react/TableHead";
 import TableRow from "@oxygen-ui/react/TableRow";
 import Typography from "@oxygen-ui/react/Typography";
+import * as Icons from "@oxygen-ui/react-icons";
 import { ExternalLink } from "lucide-react";
 import React from "react";
-import loginData from "../../data/login-history.json";
 import actions from "../../data/actions.json";
+import loginData from "../../data/login-history.json";
 
 export const Overview = () => {
     return (
@@ -40,57 +40,58 @@ export const Overview = () => {
             <Typography variant="h6" mt={ 4 } mb={ 2 }>
                 Quick Actions
             </Typography>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={ 2 } justifyContent="center">
                 { actions.map((action, index) => {
                     const Icon = Icons[action.icon];
+
                     return (
-                    <Grid xs={12} sm={6} md={4} lg={2.4} key={index}>
-                        <Card
-                        variant="outlined"
-                        sx={{
-                            height: '100%',
-                            minHeight: 240,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            borderRadius: '12px',
-                            padding: '0px 12px'
-                        }}
-                        >
-                        <CardContent>
-                            <Stack alignItems="center" spacing={2}>
-                            <Box
-                                sx={{
-                                backgroundColor: '#F0F0F0',
-                                borderRadius: '50%',
-                                padding: 2,
-                                display: 'inline-flex',
-                                }}
+                        <Grid xs={ 12 } sm={ 6 } md={ 4 } lg={ 2.4 } key={ index }>
+                            <Card
+                                variant="outlined"
+                                sx={ {
+                                    height: "100%",
+                                    minHeight: 240,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    borderRadius: "12px",
+                                    padding: "0px 12px"
+                                } }
                             >
-                                {Icon && <Icon sx={{ fontSize: 32 }} />}
-                            </Box>
-                            <Typography align="center" variant="subtitle1" fontWeight="bold">
-                                {action.label}
-                            </Typography>
-                            <Typography align="center" variant="body2" color="text.secondary">
-                                {action.description}
-                            </Typography>
-                            </Stack>
-                        </CardContent>
-                        </Card>
-                    </Grid>
+                                <CardContent>
+                                    <Stack alignItems="center" spacing={ 2 }>
+                                        <Box
+                                            sx={ {
+                                                backgroundColor: "#F0F0F0",
+                                                borderRadius: "50%",
+                                                padding: 2,
+                                                display: "inline-flex"
+                                            } }
+                                        >
+                                            { Icon && <Icon sx={ { fontSize: 32 } } /> }
+                                        </Box>
+                                        <Typography align="center" variant="subtitle1" fontWeight="bold">
+                                            { action.label }
+                                        </Typography>
+                                        <Typography align="center" variant="body2" color="text.secondary">
+                                            { action.description }
+                                        </Typography>
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     );
                 }) }
             </Grid>
 
-            <Box 
-                mt={ 4 } 
-                sx={{ 
-                    backgroundColor: '#FFFFFF', 
-                    padding: 4, 
-                    borderRadius: 2, 
-                    border: '1px solid #0000001f' 
-                }}
+            <Box
+                mt={ 4 }
+                sx={ {
+                    backgroundColor: "#FFFFFF",
+                    padding: 4,
+                    borderRadius: 2,
+                    border: "1px solid #0000001f"
+                } }
             >
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6">Recent Login Activity</Typography>
