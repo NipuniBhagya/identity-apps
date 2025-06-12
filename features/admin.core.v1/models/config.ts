@@ -118,6 +118,10 @@ export interface FeatureConfigInterface {
      */
     emailProviders?: FeatureAccessConfigInterface;
     /**
+     * Flow orchestration feature.
+     */
+    flows?: FeatureAccessConfigInterface;
+    /**
      * Getting started feature.
      */
     gettingStarted?: FeatureAccessConfigInterface;
